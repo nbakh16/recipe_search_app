@@ -46,6 +46,20 @@ class RecipeApp extends StatelessWidget {
           size: 28
         ),
       ),
+      textTheme: const TextTheme(
+        headlineSmall: TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.w500,
+          shadows: <Shadow>[
+            Shadow(
+              offset: Offset(1.25, 1.25),
+              blurRadius: 3.0,
+              color: Colors.black,
+            ),
+          ],
+        ),
+      ),
       inputDecorationTheme: const InputDecorationTheme(
         filled: true,
         fillColor: Colors.white,

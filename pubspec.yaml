@@ -8,6 +8,11 @@ environment:
 dependencies: 
   cupertino_icons: ^1.0.2
   get: 4.6.5
+
+  #caching
+  flutter_cache_manager: ^3.3.1
+  cached_network_image: ^3.2.3
+
   flutter: 
     sdk: flutter
 

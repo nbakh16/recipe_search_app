@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:recipe_app/app/modules/home/widgets/recipe_card.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -13,7 +14,7 @@ class HomeView extends GetView<HomeController> {
 
     return Scaffold(
       appBar: SearchAppBar(),
-      drawer: Drawer(),
+      drawer: const Drawer(),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -24,7 +25,7 @@ class HomeView extends GetView<HomeController> {
               shrinkWrap: true,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: screenWidth<700 ? 2 : screenWidth<900 ? 3 : 4,
-                  childAspectRatio: 0.65
+                  childAspectRatio: 0.85
               ),
               itemCount: 16,
               itemBuilder: (context, index) {
@@ -32,9 +33,13 @@ class HomeView extends GetView<HomeController> {
                   onTap: () {
 
                   },
-                  child: Card(
-
-                  ),
+                  child: RecipeCard(
+                    image: 'https://fastly.picsum.photos/id/9/250/250.jpg?hmac=tqDH5wEWHDN76mBIWEPzg1in6egMl49qZeguSaH9_VI',
+                    title: 'Title',
+                    subTitle: 'Sub-tttt',
+                    calText: '100',
+                    ingrText: '8',
+                  )
                 );
               }
             ),
