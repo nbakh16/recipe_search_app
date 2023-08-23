@@ -61,6 +61,10 @@ class RecipeApp extends StatelessWidget {
         ),
         titleMedium: TextStyle(
           fontWeight: FontWeight.bold
+        ),
+        titleLarge: TextStyle(
+          color: Colors.grey,
+          fontSize: 18
         )
       ),
       inputDecorationTheme: const InputDecorationTheme(

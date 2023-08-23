@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_app/app/data/utils/colors.dart';
+import 'package:recipe_app/app/modules/details/widgets/ingredients_card.dart';
 
 import '../widgets/squared_button.dart';
 
@@ -16,6 +17,8 @@ class _DetailsViewState extends State<DetailsView> {
 
   @override
   Widget build(BuildContext context) {
+    List _dummyList = ['23', 'caural-hat', 'Dima'];
+
     return Stack(
       children: [
         Container(
@@ -47,6 +50,7 @@ class _DetailsViewState extends State<DetailsView> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 6.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
@@ -56,14 +60,16 @@ class _DetailsViewState extends State<DetailsView> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Text('Wok-Fried Duck & Oyster Sauce',
+                              child: Text('Lorem ipsum dolor sit amet, consectetur',
                                 style: Theme.of(context).textTheme.titleMedium,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                             Text('See full recipe on:',
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
-                            Text('BBC GOOD FOOD',
+                            Text('BBC good food'.toUpperCase(),
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                 decoration: TextDecoration.underline
                               ),
@@ -99,7 +105,94 @@ class _DetailsViewState extends State<DetailsView> {
                         ),
                       )
                     ],
-                  )
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Health Labels:',
+                        style: Theme.of(context).textTheme.titleLarge
+                      ),
+                      Wrap(
+                        children: <Widget>[
+                          for(var item in _dummyList)
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.shade300,
+                                    borderRadius: BorderRadius.circular(16.0)
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Text(item,
+                                    style: Theme.of(context).textTheme.titleSmall,
+                                  ),
+                                ),
+                              ),
+                            )
+                        ],
+                      )
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Cuisine Type:',
+                          style: Theme.of(context).textTheme.titleLarge
+                      ),
+                      Wrap(
+                        children: <Widget>[
+                          for(var item in _dummyList)
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.shade300,
+                                    borderRadius: BorderRadius.circular(16.0)
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Text(item,
+                                    style: Theme.of(context).textTheme.titleSmall,
+                                  ),
+                                ),
+                              ),
+                            )
+                        ],
+                      )
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Ingredients',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Colors.black87,
+                        ),
+                      ),
+                      Container(
+                        height: 4,
+                        width: MediaQuery.sizeOf(context).width * 0.25,
+                        color: Colors.amberAccent,
+                      ),
+                      SizedBox(
+                        height: 135,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 6,
+                          itemBuilder: (context, index) {
+                            return IngredientsCard(
+                                title: '2.0 tbsp',
+                                subTitle: 'Vagitable Oil'
+                            );
+                          }
+                        ),
+                      )
+                    ],
+                  ),
                 ],
               ),
             ),

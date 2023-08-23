@@ -27,7 +27,7 @@ class RecipeCard extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(borderRadius)
       ),
-      elevation: 4,
+      elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Column(
