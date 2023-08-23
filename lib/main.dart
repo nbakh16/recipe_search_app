@@ -59,6 +59,9 @@ class RecipeApp extends StatelessWidget {
             ),
           ],
         ),
+        titleMedium: TextStyle(
+          fontWeight: FontWeight.bold
+        )
       ),
       inputDecorationTheme: const InputDecorationTheme(
         filled: true,
