@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:recipe_app/app/data/utils/colors.dart';
+import 'package:recipe_app/app/modules/details/widgets/custom_chip.dart';
 import 'package:recipe_app/app/modules/details/widgets/ingredients_card.dart';
 
+import '../widgets/heading_text.dart';
 import '../widgets/squared_button.dart';
 
 
@@ -118,18 +121,7 @@ class _DetailsViewState extends State<DetailsView> {
                           for(var item in _dummyList)
                             Padding(
                               padding: const EdgeInsets.all(5.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.shade300,
-                                    borderRadius: BorderRadius.circular(16.0)
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: Text(item,
-                                    style: Theme.of(context).textTheme.titleSmall,
-                                  ),
-                                ),
-                              ),
+                              child: CustomChip(text: item)
                             )
                         ],
                       )
@@ -147,18 +139,7 @@ class _DetailsViewState extends State<DetailsView> {
                           for(var item in _dummyList)
                             Padding(
                               padding: const EdgeInsets.all(5.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.shade300,
-                                    borderRadius: BorderRadius.circular(16.0)
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: Text(item,
-                                    style: Theme.of(context).textTheme.titleSmall,
-                                  ),
-                                ),
-                              ),
+                              child: CustomChip(text: item)
                             )
                         ],
                       )
@@ -167,16 +148,7 @@ class _DetailsViewState extends State<DetailsView> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Ingredients',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Colors.black87,
-                        ),
-                      ),
-                      Container(
-                        height: 4,
-                        width: MediaQuery.sizeOf(context).width * 0.25,
-                        color: Colors.amberAccent,
-                      ),
+                      const HeadingText(title: 'Ingredients'),
                       SizedBox(
                         height: 135,
                         child: ListView.builder(
@@ -193,6 +165,103 @@ class _DetailsViewState extends State<DetailsView> {
                       )
                     ],
                   ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const HeadingText(title: 'Preparation'),
+                      Center(
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Instructions on ',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            children: const [
+                              TextSpan(text: 'BBC Food', style: TextStyle(fontWeight: FontWeight.bold)),
+                              WidgetSpan(child: Icon(IconlyLight.arrowDown2, size: 20,))
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const HeadingText(title: 'Nutrition'),
+                      Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: Container(
+                          height: 120,
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12.0),
+                          decoration: const BoxDecoration(
+                            color: mainColor,
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(24),
+                              bottomLeft: Radius.circular(24),
+                              bottomRight: Radius.circular(24),
+                            )
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    const CustomChip(text: '146', borderRadius: 10,),
+                                    Text('Cal/Serv'.toUpperCase(),
+                                      style: Theme.of(context).textTheme.titleMedium,
+                                    )
+                                  ],
+                                ),
+                                const VerticalDivider(thickness: 2, color: Colors.black38,),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    const CustomChip(text: '146', borderRadius: 10,),
+                                    Text('Cal/Serv'.toUpperCase(),
+                                      style: Theme.of(context).textTheme.titleMedium,
+                                    )
+                                  ],
+                                ),
+                                const VerticalDivider(thickness: 2, color: Colors.black38,),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    const CustomChip(text: '146', borderRadius: 10,),
+                                    Text('Cal/Serv'.toUpperCase(),
+                                      style: Theme.of(context).textTheme.titleMedium,
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const HeadingText(title: 'Tags'),
+                      Wrap(
+                        children: <Widget>[
+                          for(var item in _dummyList)
+                            Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Text('$item,',
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 16
+                                  ),
+                                )
+                            )
+                        ],
+                      )
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -205,46 +274,63 @@ class _DetailsViewState extends State<DetailsView> {
   final BorderRadius _borderRadius = const BorderRadius.all(Radius.circular(10.0));
   AppBar searchAppBar() {
     return AppBar(
-      toolbarHeight: 86,
+      toolbarHeight: 110,
       backgroundColor: Colors.transparent,
       elevation: 0,
       title: Padding(
         padding: const EdgeInsets.only(top: 28.0, bottom: 4.0),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            boxShadow: [BoxShadow(
-              offset: const Offset(2.2, 2.2),
-              blurRadius: 2.0,
-              spreadRadius: 0.5,
-              color: Colors.grey.withOpacity(0.75))]
-          ),
-          child: TextFormField(
-            controller: _searchTEController,
-            textAlignVertical: TextAlignVertical.center,
-            decoration: InputDecoration(
-              hintText: 'Search...',
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: IconButton(
-                onPressed: () {
-                  _searchTEController.clear();
-                },
-                icon: const Icon(Icons.cancel),
-                splashRadius: 1,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [BoxShadow(
+                  offset: const Offset(2.2, 2.2),
+                  blurRadius: 2.0,
+                  spreadRadius: 0.5,
+                  color: Colors.grey.withOpacity(0.75))]
               ),
-              border: OutlineInputBorder(borderRadius: _borderRadius),
-              focusedBorder: OutlineInputBorder(borderRadius: _borderRadius),
-              focusedErrorBorder: OutlineInputBorder(borderRadius: _borderRadius),
+              child: TextFormField(
+                controller: _searchTEController,
+                textAlignVertical: TextAlignVertical.center,
+                decoration: InputDecoration(
+                  hintText: 'Search...',
+                  prefixIcon: const Icon(IconlyLight.search),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      _searchTEController.clear();
+                    },
+                    icon: const Icon(Icons.cancel),
+                    splashRadius: 1,
+                  ),
+                  border: OutlineInputBorder(borderRadius: _borderRadius),
+                  focusedBorder: OutlineInputBorder(borderRadius: _borderRadius),
+                  focusedErrorBorder: OutlineInputBorder(borderRadius: _borderRadius),
+                ),
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.done,
+                validator: (String? value) {
+                  if(value?.isEmpty ?? true) {
+                    return 'Search field is empty';
+                  }
+                  return null;
+                },
+              ),
             ),
-            keyboardType: TextInputType.text,
-            textInputAction: TextInputAction.done,
-            validator: (String? value) {
-              if(value?.isEmpty ?? true) {
-                return 'Search field is empty';
-              }
-              return null;
-            },
-          ),
+            FittedBox(
+              child: RichText(
+                text: TextSpan(
+                  text: 'Refine search by '.toUpperCase(),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  children: const [
+                    TextSpan(text: 'Calories, Diet, Ingredients', style: TextStyle(fontWeight: FontWeight.bold)),
+                    WidgetSpan(child: Icon(IconlyLight.arrowDown2, size: 22, color: Colors.black,))
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       leading: Builder(
