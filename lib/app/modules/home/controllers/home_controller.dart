@@ -6,6 +6,7 @@ import '../../../data/models/recipe_model.dart';
 
 
 class HomeController extends GetxController {
+  late Future<List<Recipe>> recipes;
 
   Future<List<Recipe>> fetchRecipes() async {
     const String recipeUrl = 'https://edamam-recipe-search.p.rapidapi.com/search?q=chicken';
@@ -39,7 +40,7 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
-    fetchRecipes();
+    recipes = fetchRecipes();
     super.onInit();
   }
 

@@ -67,9 +67,9 @@ class RecipeCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Expanded(child: Center(child: Text('$calText CAL'))),
+                    Expanded(child: Center(child: FittedBox(child: Text('$calText CAL')))),
                     const VerticalDivider(thickness: 1, color: Colors.grey),
-                    Expanded(child: Center(child: Text('$ingrText INGR'))),
+                    Expanded(child: Center(child: FittedBox(child: Text('$ingrText INGR')))),
                   ],
                 ),
               ),
