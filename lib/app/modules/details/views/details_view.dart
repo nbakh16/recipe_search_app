@@ -5,6 +5,8 @@ import 'package:recipe_app/app/data/utils/colors.dart';
 import 'package:recipe_app/app/modules/details/controllers/details_controller.dart';
 import 'package:recipe_app/app/modules/details/widgets/custom_chip.dart';
 import 'package:recipe_app/app/modules/details/widgets/ingredients_card.dart';
+import 'package:recipe_app/app/modules/home/controllers/home_controller.dart';
+import 'package:recipe_app/app/modules/home/views/home_view.dart';
 import 'package:recipe_app/app/modules/home/widgets/custom_drawer.dart';
 
 import '../../../data/models/digest_model.dart';
@@ -41,7 +43,7 @@ class _DetailsViewState extends State<DetailsView> {
         Container(
           height: double.infinity,
           width: double.infinity,
-          color: Colors.white,
+          color: Colors.grey.shade100,
         ),
         Positioned(
             top: -75,
@@ -51,9 +53,9 @@ class _DetailsViewState extends State<DetailsView> {
               child: Container(
                 height: 400,
                 width: 325,
-                decoration: const BoxDecoration(
-                  color: mainColorAccent,
-                  borderRadius: BorderRadius.all(
+                decoration: BoxDecoration(
+                  color: mainColor.shade200,
+                  borderRadius: const BorderRadius.all(
                     Radius.circular(600),
                   ),
                 ),
@@ -376,37 +378,87 @@ class _DetailsViewState extends State<DetailsView> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const HeadingText(title: 'Digest'),
-                        SizedBox(
-                          height: 50,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: recipe.digest!.length,
-                            itemBuilder: (context, index) {
-                              return Obx(()=> AnimatedContainer(
-                                  duration: const Duration(milliseconds: 400),
-                                  margin: const EdgeInsets.all(6.0),
-                                  decoration: BoxDecoration(
-                                      color: selectedIndex.value == index ? mainColor : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(18)
+                        Stack(
+                          children: [
+                            Container(
+                              height: 50,
+                              margin: const EdgeInsets.symmetric(vertical: 10.0),
+                              decoration: BoxDecoration(
+                                color: mainColor,
+                                borderRadius: BorderRadius.circular(25),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.shade400,
+                                    blurRadius: 4,
+                                    offset: const Offset(3, 3),
                                   ),
-                                  child: Center(
-                                    child: InkWell(
-                                        onTap: () {
-                                          selectedIndex.value = index;
-                                          digestInfo(index);
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text('${recipe.digest?[index].label}',
-                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                color: selectedIndex.value == index ? Colors.black87 : Colors.black45
+                                ],
+                              ),
+                              child: const Align(
+                                alignment: Alignment.centerRight,
+                                child: Icon(IconlyLight.arrowRight2, size: 25, color: Colors.black87),
+                              ),
+                            ),
+                            Container(
+                              height: 50,
+                              margin: const EdgeInsets.only(
+                                right: 18.0, top: 10.0, bottom: 10.0,
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(25),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.shade400,
+                                    blurRadius: 4,
+                                    offset: const Offset(3, 3),
+                                  ),
+                                ],
+                              ),
+                              child: RawScrollbar(
+                                thickness: 1.5,
+                                thumbColor: Colors.black87,
+                                thumbVisibility: true,
+                                trackVisibility: true,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: recipe.digest!.length,
+                                  itemBuilder: (context, index) {
+                                    return Obx(()=> AnimatedContainer(
+                                        duration: const Duration(milliseconds: 400),
+                                        margin: const EdgeInsets.all(6.0),
+                                        decoration: BoxDecoration(
+                                          color: selectedIndex.value == index ? mainColor : Colors.transparent,
+                                          borderRadius: BorderRadius.circular(18),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: selectedIndex.value == index ? Colors.grey : Colors.transparent,
+                                              blurRadius: 4,
+                                              offset: const Offset(4, 4),
                                             ),
-                                          ),
-                                        )),
-                                  )
-                              ));
-                            },
-                          ),
+                                          ],
+                                        ),
+                                        child: Center(
+                                          child: InkWell(
+                                              onTap: () {
+                                                selectedIndex.value = index;
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text('${recipe.digest?[index].label}',
+                                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                      color: selectedIndex.value == index ? Colors.black87 : Colors.black45
+                                                  ),
+                                                ),
+                                              )),
+                                        )
+                                    ));
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         Container(
                           height: 200,
@@ -430,7 +482,7 @@ class _DetailsViewState extends State<DetailsView> {
                                     text: '${digestInfo(selectedIndex.value).label}',
                                     style: Theme.of(context).textTheme.headlineMedium,
                                     children: const [
-                                      WidgetSpan(child: Icon(IconlyLight.arrowDown2, size: 35,))
+                                      WidgetSpan(child: Icon(IconlyLight.arrowDown2, size: 25,))
                                     ],
                                   ),
                                 ),
@@ -590,6 +642,11 @@ class _DetailsViewState extends State<DetailsView> {
                 ),
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.done,
+                onEditingComplete: () {
+                  Get.focusScope?.unfocus();
+                  Get.offAll(()=>HomeView());
+                  Get.find<HomeController>().getRecipes(_searchTEController.text);
+                },
                 validator: (String? value) {
                   if(value?.isEmpty ?? true) {
                     return 'Search field is empty';
