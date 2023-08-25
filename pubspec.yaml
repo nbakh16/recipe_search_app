@@ -10,6 +10,7 @@ dependencies:
   get: 4.6.5
   flutter_iconly: ^1.0.2
   http: ^1.1.0
+  flutter_inappwebview: ^5.7.2+3
 
   #caching
   flutter_cache_manager: ^3.3.1

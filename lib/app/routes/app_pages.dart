@@ -1,9 +1,8 @@
 import 'package:get/get.dart';
 
-import 'package:recipe_app/app/modules/details/bindings/details_binding.dart';
 import 'package:recipe_app/app/modules/details/views/details_view.dart';
-import 'package:recipe_app/app/modules/home/bindings/home_binding.dart';
 import 'package:recipe_app/app/modules/home/views/home_view.dart';
+import 'package:recipe_app/app/modules/web_view/views/web_view_view.dart';
 
 part 'app_routes.dart';
 
@@ -16,12 +15,14 @@ class AppPages {
     GetPage(
       name: _Paths.HOME,
       page: () => HomeView(),
-      binding: HomeBinding(),
     ),
     GetPage(
       name: _Paths.DETAILS,
-      page: () => DetailsView(),
-      binding: DetailsBinding(),
+      page: () => const DetailsView(),
+    ),
+    GetPage(
+      name: _Paths.WEB_VIEW,
+      page: () => const WebViewView(),
     ),
   ];
 }

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:get/get.dart';
 import 'package:recipe_app/app/data/utils/colors.dart';
+import 'package:recipe_app/app/modules/details/controllers/details_controller.dart';
 import 'package:recipe_app/app/modules/details/widgets/custom_chip.dart';
 import 'package:recipe_app/app/modules/details/widgets/ingredients_card.dart';
 
+import '../../../data/models/recipe_model.dart';
+import '../../web_view/views/web_view_view.dart';
 import '../widgets/heading_text.dart';
 import '../widgets/squared_button.dart';
 
@@ -16,11 +20,15 @@ class DetailsView extends StatefulWidget {
 }
 
 class _DetailsViewState extends State<DetailsView> {
+  final detailsController = Get.find<DetailsController>();
   final TextEditingController _searchTEController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     List _dummyList = ['23', 'caural-hat', 'Dima'];
+
+    final Recipe selectedRecipe = Get.arguments;
+    detailsController.recipeDetails(selectedRecipe);
 
     return Stack(
       children: [
@@ -52,218 +60,228 @@ class _DetailsViewState extends State<DetailsView> {
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 6.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Text('Lorem ipsum dolor sit amet, consectetur',
-                                style: Theme.of(context).textTheme.titleMedium,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            Text('See full recipe on:',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                            Text('BBC good food'.toUpperCase(),
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                decoration: TextDecoration.underline
-                              ),
-                            ),
-                            const SizedBox(height: 8.0),
-                            Row(
-                              children: [
-                                SquareButton(
-                                  onTap: () {
-
-                                  },
-                                  icon: const Icon(Icons.add),
+              child: Obx(() {
+                final recipe = detailsController.recipeInfo.value;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: Text('${recipe.label}',
+                                  style: Theme.of(context).textTheme.titleMedium,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                SquareButton(
-                                  onTap: () {
-
-                                  },
-                                  icon: const Icon(Icons.send),
+                              ),
+                              Text('See full recipe on:',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Get.to(()=> const WebViewView(),
+                                    arguments: recipe.url
+                                  );
+                                },
+                                child: Text('${recipe.source}'.toUpperCase(),
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      decoration: TextDecoration.underline
+                                  ),
                                 ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          height: 150,
-                          width: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(16)
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('Health Labels:',
-                        style: Theme.of(context).textTheme.titleLarge
-                      ),
-                      Wrap(
-                        children: <Widget>[
-                          for(var item in _dummyList)
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: CustomChip(text: item)
-                            )
-                        ],
-                      )
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('Cuisine Type:',
-                          style: Theme.of(context).textTheme.titleLarge
-                      ),
-                      Wrap(
-                        children: <Widget>[
-                          for(var item in _dummyList)
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: CustomChip(text: item)
-                            )
-                        ],
-                      )
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const HeadingText(title: 'Ingredients'),
-                      SizedBox(
-                        height: 135,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 6,
-                          itemBuilder: (context, index) {
-                            return IngredientsCard(
-                                title: '2.0 tbsp',
-                                subTitle: 'Vagitable Oil'
-                            );
-                          }
-                        ),
-                      )
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const HeadingText(title: 'Preparation'),
-                      Center(
-                        child: RichText(
-                          text: TextSpan(
-                            text: 'Instructions on ',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                            children: const [
-                              TextSpan(text: 'BBC Food', style: TextStyle(fontWeight: FontWeight.bold)),
-                              WidgetSpan(child: Icon(IconlyLight.arrowDown2, size: 20,))
+                              ),
+                              const SizedBox(height: 8.0),
+                              Row(
+                                children: [
+                                  SquareButton(
+                                    onTap: () {
+
+                                    },
+                                    icon: const Icon(Icons.add),
+                                  ),
+                                  SquareButton(
+                                    onTap: () {
+
+                                    },
+                                    icon: const Icon(Icons.send),
+                                  ),
+                                ],
+                              )
                             ],
                           ),
                         ),
-                      )
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const HeadingText(title: 'Nutrition'),
-                      Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: Container(
-                          height: 120,
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(12.0),
-                          decoration: const BoxDecoration(
-                            color: mainColor,
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(24),
-                              bottomLeft: Radius.circular(24),
-                              bottomRight: Radius.circular(24),
-                            )
+                        Expanded(
+                          child: Container(
+                            height: 150,
+                            width: 150,
+                            decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(16)
+                            ),
                           ),
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    const CustomChip(text: '146', borderRadius: 10,),
-                                    Text('Cal/Serv'.toUpperCase(),
-                                      style: Theme.of(context).textTheme.titleMedium,
-                                    )
-                                  ],
-                                ),
-                                const VerticalDivider(thickness: 2, color: Colors.black38,),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    const CustomChip(text: '146', borderRadius: 10,),
-                                    Text('Cal/Serv'.toUpperCase(),
-                                      style: Theme.of(context).textTheme.titleMedium,
-                                    )
-                                  ],
-                                ),
-                                const VerticalDivider(thickness: 2, color: Colors.black38,),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    const CustomChip(text: '146', borderRadius: 10,),
-                                    Text('Cal/Serv'.toUpperCase(),
-                                      style: Theme.of(context).textTheme.titleMedium,
-                                    )
-                                  ],
-                                ),
+                        )
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Health Labels:',
+                            style: Theme.of(context).textTheme.titleLarge
+                        ),
+                        Wrap(
+                          children: <Widget>[
+                            for(var item in _dummyList)
+                              Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: CustomChip(text: item)
+                              )
+                          ],
+                        )
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Cuisine Type:',
+                            style: Theme.of(context).textTheme.titleLarge
+                        ),
+                        Wrap(
+                          children: <Widget>[
+                            for(var item in _dummyList)
+                              Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: CustomChip(text: item)
+                              )
+                          ],
+                        )
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const HeadingText(title: 'Ingredients'),
+                        SizedBox(
+                          height: 135,
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 6,
+                              itemBuilder: (context, index) {
+                                return IngredientsCard(
+                                    title: '2.0 tbsp',
+                                    subTitle: 'Vagitable Oil'
+                                );
+                              }
+                          ),
+                        )
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const HeadingText(title: 'Preparation'),
+                        Center(
+                          child: RichText(
+                            text: TextSpan(
+                              text: 'Instructions on ',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              children: const [
+                                TextSpan(text: 'BBC Food', style: TextStyle(fontWeight: FontWeight.bold)),
+                                WidgetSpan(child: Icon(IconlyLight.arrowDown2, size: 20,))
                               ],
                             ),
                           ),
-                        ),
-                      )
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const HeadingText(title: 'Tags'),
-                      Wrap(
-                        children: <Widget>[
-                          for(var item in _dummyList)
-                            Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Text('$item,',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    decoration: TextDecoration.underline,
-                                    fontSize: 16
-                                  ),
+                        )
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const HeadingText(title: 'Nutrition'),
+                        Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Container(
+                            height: 120,
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(12.0),
+                            decoration: const BoxDecoration(
+                                color: mainColor,
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(24),
+                                  bottomLeft: Radius.circular(24),
+                                  bottomRight: Radius.circular(24),
                                 )
-                            )
-                        ],
-                      )
-                    ],
-                  ),
-                ],
-              ),
+                            ),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      const CustomChip(text: '146', borderRadius: 10,),
+                                      Text('Cal/Serv'.toUpperCase(),
+                                        style: Theme.of(context).textTheme.titleMedium,
+                                      )
+                                    ],
+                                  ),
+                                  const VerticalDivider(thickness: 2, color: Colors.black38,),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      const CustomChip(text: '146', borderRadius: 10,),
+                                      Text('Cal/Serv'.toUpperCase(),
+                                        style: Theme.of(context).textTheme.titleMedium,
+                                      )
+                                    ],
+                                  ),
+                                  const VerticalDivider(thickness: 2, color: Colors.black38,),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      const CustomChip(text: '146', borderRadius: 10,),
+                                      Text('Cal/Serv'.toUpperCase(),
+                                        style: Theme.of(context).textTheme.titleMedium,
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const HeadingText(title: 'Tags'),
+                        Wrap(
+                          children: <Widget>[
+                            for(var item in _dummyList)
+                              Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Text('$item,',
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        decoration: TextDecoration.underline,
+                                        fontSize: 16
+                                    ),
+                                  )
+                              )
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                );
+              })
             ),
           )
         ),

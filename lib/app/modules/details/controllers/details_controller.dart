@@ -1,20 +1,12 @@
 import 'package:get/get.dart';
 
+import '../../../data/models/recipe_model.dart';
+
 class DetailsController extends GetxController {
-  //TODO: Implement DetailsController
+  final Rx<Recipe> recipeInfo = Rx<Recipe>(Recipe());
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
+  void recipeDetails(Recipe recipe) => recipeInfo.value = recipe;
 
   @override
   void onClose() {}
-  void increment() => count.value++;
 }

@@ -5,15 +5,11 @@ import 'package:recipe_app/app/modules/home/widgets/recipe_card.dart';
 import '../../../data/models/recipe_model.dart';
 import '../../details/views/details_view.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+class HomeView extends StatelessWidget {
+  HomeView({super.key});
 
-  @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
   final homeController = Get.find<HomeController>();
+
   final TextEditingController _searchTEController = TextEditingController();
 
   @override
@@ -47,7 +43,10 @@ class _HomeViewState extends State<HomeView> {
                         Recipe recipe = controller.recipeList[index];
                         return InkWell(
                             onTap: () {
-                              Get.to(()=> const DetailsView());
+                              Get.to(()=>
+                                const DetailsView(),
+                                arguments: recipe
+                              );
                             },
                             child: RecipeCard(
                               recipe: recipe,
@@ -84,7 +83,7 @@ class _HomeViewState extends State<HomeView> {
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.done,
           onEditingComplete: () {
-            FocusScope.of(context).unfocus();
+            Get.focusScope?.unfocus();
             homeController.getRecipes(_searchTEController.text);
           },
           // onChanged: (t) {
