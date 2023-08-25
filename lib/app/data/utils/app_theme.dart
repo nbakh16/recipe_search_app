@@ -67,6 +67,9 @@ class AppTheme{
               ),
               borderRadius: BorderRadius.all(Radius.circular(100.0))
           ),
+          hintStyle: TextStyle(
+            color: Colors.black26
+          ),
           contentPadding: EdgeInsets.only(left: 14.0, right: 6.0),
           suffixIconColor: Colors.grey
       ),

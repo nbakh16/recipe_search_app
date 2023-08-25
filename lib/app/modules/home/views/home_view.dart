@@ -45,6 +45,7 @@ class HomeView extends StatelessWidget {
                             onTap: () {
                               Get.to(()=>
                                 const DetailsView(),
+                                transition: Transition.downToUp,
                                 arguments: recipe
                               );
                             },
