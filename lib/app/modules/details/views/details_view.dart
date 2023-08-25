@@ -7,6 +7,7 @@ import 'package:recipe_app/app/modules/details/widgets/custom_chip.dart';
 import 'package:recipe_app/app/modules/details/widgets/ingredients_card.dart';
 
 import '../../../data/models/recipe_model.dart';
+import '../../home/widgets/custom_network_image.dart';
 import '../../web_view/views/web_view_view.dart';
 import '../widgets/heading_text.dart';
 import '../widgets/squared_button.dart';
@@ -25,7 +26,7 @@ class _DetailsViewState extends State<DetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    List _dummyList = ['23', 'caural-hat', 'Dima'];
+    double screenWidth = MediaQuery.sizeOf(context).width;
 
     final Recipe selectedRecipe = Get.arguments;
     detailsController.recipeDetails(selectedRecipe);
@@ -88,9 +89,12 @@ class _DetailsViewState extends State<DetailsView> {
                                     arguments: recipe.url
                                   );
                                 },
-                                child: Text('${recipe.source}'.toUpperCase(),
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      decoration: TextDecoration.underline
+                                child: FittedBox(
+                                  child: Text('${recipe.source}'.toUpperCase(),
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      decoration: TextDecoration.underline,
+                                      fontSize: 16
+                                    ),
                                   ),
                                 ),
                               ),
@@ -101,13 +105,15 @@ class _DetailsViewState extends State<DetailsView> {
                                     onTap: () {
 
                                     },
-                                    icon: const Icon(Icons.add),
+                                    icon: const Icon(IconlyLight.plus),
                                   ),
                                   SquareButton(
                                     onTap: () {
-
+                                      Get.to(()=> const WebViewView(),
+                                          arguments: recipe.shareAs
+                                      );
                                     },
-                                    icon: const Icon(Icons.send),
+                                    icon: const Icon(IconlyBold.send),
                                   ),
                                 ],
                               )
@@ -115,12 +121,12 @@ class _DetailsViewState extends State<DetailsView> {
                           ),
                         ),
                         Expanded(
-                          child: Container(
+                          child: SizedBox(
                             height: 150,
-                            width: 150,
-                            decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(16)
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(40),
+                              child: CustomNetworkImage(
+                                  imgUrl: '${recipe.image}'),
                             ),
                           ),
                         )
@@ -135,11 +141,8 @@ class _DetailsViewState extends State<DetailsView> {
                         ),
                         Wrap(
                           children: <Widget>[
-                            for(var item in _dummyList)
-                              Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: CustomChip(text: item)
-                              )
+                            for(var item in recipe.healthLabels!)
+                              CustomChip(text: item)
                           ],
                         )
                       ],
@@ -153,11 +156,8 @@ class _DetailsViewState extends State<DetailsView> {
                         ),
                         Wrap(
                           children: <Widget>[
-                            for(var item in _dummyList)
-                              Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: CustomChip(text: item)
-                              )
+                            for(var item in recipe.cuisineType!)
+                              CustomChip(text: item)
                           ],
                         )
                       ],
@@ -167,15 +167,14 @@ class _DetailsViewState extends State<DetailsView> {
                       children: [
                         const HeadingText(title: 'Ingredients'),
                         SizedBox(
-                          height: 135,
+                          height: screenWidth<700 ? screenWidth*0.33 : screenWidth*0.20,
                           child: ListView.builder(
                               shrinkWrap: true,
                               scrollDirection: Axis.horizontal,
-                              itemCount: 6,
+                              itemCount: recipe.ingredients?.length,
                               itemBuilder: (context, index) {
                                 return IngredientsCard(
-                                    title: '2.0 tbsp',
-                                    subTitle: 'Vagitable Oil'
+                                  ingredients: recipe.ingredients![index]
                                 );
                               }
                           ),
@@ -187,14 +186,21 @@ class _DetailsViewState extends State<DetailsView> {
                       children: [
                         const HeadingText(title: 'Preparation'),
                         Center(
-                          child: RichText(
-                            text: TextSpan(
-                              text: 'Instructions on ',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              children: const [
-                                TextSpan(text: 'BBC Food', style: TextStyle(fontWeight: FontWeight.bold)),
-                                WidgetSpan(child: Icon(IconlyLight.arrowDown2, size: 20,))
-                              ],
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.to(()=> const WebViewView(),
+                                  arguments: recipe.url
+                              );
+                            },
+                            child: RichText(
+                              text: TextSpan(
+                                text: 'Instructions on ',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                children: const [
+                                  TextSpan(text: 'BBC Food', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  WidgetSpan(child: Icon(IconlyLight.arrowDown2, size: 20,))
+                                ],
+                              ),
                             ),
                           ),
                         )
@@ -225,8 +231,11 @@ class _DetailsViewState extends State<DetailsView> {
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
-                                      const CustomChip(text: '146', borderRadius: 10,),
-                                      Text('Cal/Serv'.toUpperCase(),
+                                      CustomChip(
+                                        text: '${recipe.totalNutrients?.eNERCKCAL?.quantity?.toStringAsFixed(2)} '
+                                            '${recipe.totalNutrients?.eNERCKCAL?.unit}',
+                                            borderRadius: 10,),
+                                      Text('${recipe.totalNutrients?.eNERCKCAL?.label}'.toUpperCase(),
                                         style: Theme.of(context).textTheme.titleMedium,
                                       )
                                     ],
@@ -235,8 +244,11 @@ class _DetailsViewState extends State<DetailsView> {
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
-                                      const CustomChip(text: '146', borderRadius: 10,),
-                                      Text('Cal/Serv'.toUpperCase(),
+                                      CustomChip(
+                                        text: '${recipe.totalNutrients?.fAT?.quantity?.toStringAsFixed(2)} '
+                                            '${recipe.totalNutrients?.fAT?.unit}',
+                                        borderRadius: 10,),
+                                      Text('${recipe.totalNutrients?.fAT?.label}'.toUpperCase(),
                                         style: Theme.of(context).textTheme.titleMedium,
                                       )
                                     ],
@@ -245,8 +257,11 @@ class _DetailsViewState extends State<DetailsView> {
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
-                                      const CustomChip(text: '146', borderRadius: 10,),
-                                      Text('Cal/Serv'.toUpperCase(),
+                                      CustomChip(
+                                        text: '${recipe.totalNutrients?.sUGAR?.quantity?.toStringAsFixed(2)} '
+                                            '${recipe.totalNutrients?.sUGAR?.unit}',
+                                        borderRadius: 10,),
+                                      Text('${recipe.totalNutrients?.sUGAR?.label}'.toUpperCase(),
                                         style: Theme.of(context).textTheme.titleMedium,
                                       )
                                     ],
@@ -265,9 +280,9 @@ class _DetailsViewState extends State<DetailsView> {
                         const HeadingText(title: 'Tags'),
                         Wrap(
                           children: <Widget>[
-                            for(var item in _dummyList)
+                            for(var item in recipe.dietLabels!)
                               Padding(
-                                  padding: const EdgeInsets.all(5.0),
+                                  padding: const EdgeInsets.all(4.0),
                                   child: Text('$item,',
                                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                         decoration: TextDecoration.underline,

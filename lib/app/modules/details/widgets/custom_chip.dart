@@ -8,15 +8,18 @@ class CustomChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.grey.shade300,
-          borderRadius: BorderRadius.circular(borderRadius)
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(6.0),
-        child: Text(text,
-          style: Theme.of(context).textTheme.titleSmall,
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.grey.shade300,
+            borderRadius: BorderRadius.circular(borderRadius)
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(6.0),
+          child: Text(text,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
         ),
       ),
     );

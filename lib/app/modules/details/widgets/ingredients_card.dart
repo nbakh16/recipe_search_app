@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../../data/models/ingredients_model.dart';
 import '../../../data/utils/colors.dart';
 
 class IngredientsCard extends StatelessWidget {
-  const IngredientsCard({super.key, required this.title, required this.subTitle});
+  const IngredientsCard({super.key, required this.ingredients});
 
-  final String title, subTitle;
+  final Ingredients ingredients;
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +23,14 @@ class IngredientsCard extends StatelessWidget {
               Expanded(
                   flex: 2,
                   child: Center(
-                    child: FittedBox(
-                      child: Text(title,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Text('${ingredients.text}',
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontSize: 18
                         ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   )
@@ -42,11 +46,14 @@ class IngredientsCard extends StatelessWidget {
                         color: mainColor.shade200
                     ),
                     child: Center(
-                      child: FittedBox(
-                        child: Text(subTitle,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                        child: Text('${ingredients.foodCategory}',
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontSize: 16,
+                            fontSize: 15,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ),
