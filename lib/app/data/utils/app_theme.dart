@@ -38,12 +38,25 @@ class AppTheme{
               ),
             ],
           ),
+          headlineMedium: TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.bold,
+            fontSize: 28
+          ),
           titleMedium: TextStyle(
               fontWeight: FontWeight.bold
           ),
           titleLarge: TextStyle(
               color: Colors.grey,
               fontSize: 18
+          ),
+          labelMedium: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline
+          ),
+          bodyMedium: TextStyle(
+            fontSize: 15
           )
       ),
       inputDecorationTheme: const InputDecorationTheme(
