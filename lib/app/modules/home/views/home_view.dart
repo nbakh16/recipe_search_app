@@ -13,62 +13,52 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final homeController = Get.find<HomeController>();
   final TextEditingController _searchTEController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.sizeOf(context).width;
-    final homeController = Get.find<HomeController>();
 
     return Scaffold(
       appBar: searchAppBar(),
       drawer: const Drawer(),
-      body: Center(
-          child: SingleChildScrollView(
+      body: RefreshIndicator(
+        onRefresh: () async{
+          homeController.getRecipes(_searchTEController.text);
+        },
+        child: Center(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
-              child: FutureBuilder<List<Recipe>>(
-                future: homeController.recipes,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshot.error}'),
-                    );
-                  } else {
-                    final List<Recipe> recipes = snapshot.data!;
-                    return GridView.builder(
-                        physics: const ScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: screenWidth<700 ? 2 : screenWidth<900 ? 3 : 4,
-                            childAspectRatio: 0.85
-                        ),
-                        itemCount: recipes.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                              onTap: () {
-                                Get.to(()=> const DetailsView());
-                              },
-                              child: RecipeCard(
-                                image: '${recipes[index].image}',
-                                title: '${recipes[index].label}',
-                                subTitle: '${recipes[index].source}',
-                                calText: recipes[index].calories.toString().split('.').first,
-                                ingrText: '${recipes[index].ingredients?.length}',
-                              )
-                          );
-                        }
-                    );
-                  }
-                },
-              )
-            ),
-          )
+              child: GetBuilder<HomeController>(builder: (controller){
+                if (controller.recipeList.isEmpty) {
+                  return const CircularProgressIndicator();
+                } else {
+                  return GridView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: screenWidth<700 ? 2 : screenWidth<900 ? 3 : 4,
+                          childAspectRatio: 0.85
+                      ),
+                      itemCount: controller.recipeList.length,
+                      itemBuilder: (context, index) {
+                        Recipe recipe = controller.recipeList[index];
+                        return InkWell(
+                            onTap: () {
+                              Get.to(()=> const DetailsView());
+                            },
+                            child: RecipeCard(
+                              recipe: recipe,
+                            )
+                        );
+                      }
+                  );
+                }
+              })
+            )
+        ),
       ),
     );
   }
@@ -93,6 +83,13 @@ class _HomeViewState extends State<HomeView> {
           ),
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.done,
+          onEditingComplete: () {
+            FocusScope.of(context).unfocus();
+            homeController.getRecipes(_searchTEController.text);
+          },
+          // onChanged: (t) {
+          //   homeController.getRecipes(_searchTEController.text);
+          // },
           validator: (String? value) {
             if(value?.isEmpty ?? true) {
               return 'Search field is empty';

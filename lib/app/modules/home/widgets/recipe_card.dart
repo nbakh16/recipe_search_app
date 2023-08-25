@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_app/app/data/models/recipe_model.dart';
 import '../../../data/utils/colors.dart';
 import 'custom_network_image.dart';
 
 class RecipeCard extends StatelessWidget {
 
-  final String image, title, subTitle, calText, ingrText;
+  // final String image, title, subTitle, calText, ingrText;
+  final Recipe recipe;
 
   const RecipeCard({
-    required this.image,
-    this.title = '',
-    this.subTitle = '',
-    this.calText = '',
-    this.ingrText = '',
+    required this.recipe,
     Key? key}) : super(key: key);
 
   @override
@@ -38,19 +36,21 @@ class RecipeCard extends StatelessWidget {
               child: Stack(
                 children: [
                   CustomNetworkImage(
-                      imgUrl: image
+                      imgUrl: '${recipe.image}'
                   ),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: Text(title,
+                    child: Text('${recipe.label}',
                       style: Theme.of(context).textTheme.headlineSmall,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   Positioned(
                     bottom: 0,
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
-                      child: Text(subTitle,
+                      child: Text('${recipe.source}',
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontSize: 16
                         ),
@@ -67,10 +67,21 @@ class RecipeCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Expanded(child: Center(child: FittedBox(child: Text('$calText CAL')))),
-                    const VerticalDivider(thickness: 1, color: Colors.grey),
-                    Expanded(child: Center(child: FittedBox(child: Text('$ingrText INGR')))),
-                  ],
+                    Expanded(
+                        child: Center(
+                          child: FittedBox(
+                              child: Text(
+                                '${recipe.calories.toString().split('.').first} CAL'
+                              )))),
+
+                      const VerticalDivider(thickness: 1, color: Colors.grey),
+
+                      Expanded(
+                        child: Center(
+                            child: FittedBox(
+                              child: Text(
+                                  '${recipe.ingredients!.length} INGR')))),
+                    ],
                 ),
               ),
             )

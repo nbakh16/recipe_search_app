@@ -1,47 +1,46 @@
 import 'dart:convert';
-import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:http/http.dart';
 import 'package:recipe_app/api_key.dart';
 import '../../../data/models/recipe_model.dart';
 
 
 class HomeController extends GetxController {
-  late Future<List<Recipe>> recipes;
+  List<Recipe> recipeList = <Recipe>[];
 
-  Future<List<Recipe>> fetchRecipes() async {
-    const String recipeUrl = 'https://edamam-recipe-search.p.rapidapi.com/search?q=chicken';
+  String initialRecipe = 'chicken';
 
-    try {
-      final response = await http.get(
-        Uri.parse(recipeUrl),
-        headers: {
-          'X-RapidAPI-Key': ApiKey().apiKey,
-          'X-RapidAPI-Host': 'edamam-recipe-search.p.rapidapi.com',
-        },
-      );
+  Future<void> getRecipes(String recipe) async {
+    recipeList.clear();
+    update();
 
-      if (response.statusCode == 200) {
-        final body = json.decode(response.body);
-        final List<Recipe> recipes = body['hits']
-            .map<Recipe>((key) => Recipe.fromJson(key['recipe']))
-            .toList();
+    String recipeUrl = 'https://edamam-recipe-search.p.rapidapi.com/search?q=$recipe';
 
-        print('>>>> ${recipes[0].label}');
-        return recipes;
-      } else {
-        print('Error: ${response.statusCode}');
-        return [];
-      }
-    } catch (e) {
-      print('Error: $e');
-      return [];
+    Response response = await get(
+      Uri.parse(recipeUrl),
+      headers: {
+        'X-RapidAPI-Key': ApiKey().apiKey,
+        'X-RapidAPI-Host': 'edamam-recipe-search.p.rapidapi.com',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+
+      recipeList = decodedResponse['hits']
+          .map<Recipe>((key) => Recipe.fromJson(key['recipe']))
+          .toList();
+      update();
+
+    } else {
+      print('Error: ${response.statusCode}');
     }
   }
 
   @override
   void onInit() {
-    recipes = fetchRecipes();
     super.onInit();
+    getRecipes(initialRecipe);
   }
 
   @override
