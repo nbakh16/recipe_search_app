@@ -4,6 +4,7 @@ import 'package:recipe_app/app/modules/home/controllers/home_controller.dart';
 import 'package:recipe_app/app/modules/home/widgets/recipe_card.dart';
 import '../../../data/models/recipe_model.dart';
 import '../../details/views/details_view.dart';
+import '../widgets/custom_drawer.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({super.key});
@@ -18,10 +19,12 @@ class HomeView extends StatelessWidget {
 
     return Scaffold(
       appBar: searchAppBar(),
-      drawer: const Drawer(),
-      body: RefreshIndicator(
+      drawer: const CustomDrawer(),
+        body: RefreshIndicator(
         onRefresh: () async{
-          homeController.getRecipes(_searchTEController.text);
+          if(_searchTEController.text.isNotEmpty) {
+            homeController.getRecipes(_searchTEController.text);
+          }
         },
         child: Center(
             child: Padding(
@@ -121,4 +124,5 @@ class HomeView extends StatelessWidget {
     );
   }
 }
+
 

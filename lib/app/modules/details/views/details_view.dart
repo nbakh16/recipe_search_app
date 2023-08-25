@@ -5,6 +5,7 @@ import 'package:recipe_app/app/data/utils/colors.dart';
 import 'package:recipe_app/app/modules/details/controllers/details_controller.dart';
 import 'package:recipe_app/app/modules/details/widgets/custom_chip.dart';
 import 'package:recipe_app/app/modules/details/widgets/ingredients_card.dart';
+import 'package:recipe_app/app/modules/home/widgets/custom_drawer.dart';
 
 import '../../../data/models/digest_model.dart';
 import '../../../data/models/ingredients_model.dart';
@@ -62,6 +63,7 @@ class _DetailsViewState extends State<DetailsView> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: searchAppBar(),
+          drawer: const CustomDrawer(),
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 6.0),
@@ -127,12 +129,15 @@ class _DetailsViewState extends State<DetailsView> {
                           ),
                         ),
                         Expanded(
-                          child: SizedBox(
-                            height: 150,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(40),
-                              child: CustomNetworkImage(
-                                  imgUrl: '${recipe.image}'),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: SizedBox(
+                              height: 150,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(40),
+                                child: CustomNetworkImage(
+                                    imgUrl: '${recipe.image}'),
+                              ),
                             ),
                           ),
                         )
@@ -218,7 +223,7 @@ class _DetailsViewState extends State<DetailsView> {
                                                     overflow: TextOverflow.ellipsis,
                                                   ),
                                                   const SizedBox(height: 10.0,),
-                                                  Text('Weight: ${ingredient.weight}g',
+                                                  Text('Weight: ${ingredient.weight?.toStringAsFixed(2)} g',
                                                     style: Theme.of(context).textTheme.titleSmall,
                                                     maxLines: 5,
                                                     overflow: TextOverflow.ellipsis,
