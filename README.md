@@ -1,5 +1,7 @@
 # Recipe App
 
+### [Releases](https://github.com/nbakh16/recipe_search_app/releases/tag/v0.1-alpha)
+
 ##### Mobile app to search desired recipe and browse details
 
 #### Data is from https://rapidapi.com/edamam/api/recipe-search-and-diet
