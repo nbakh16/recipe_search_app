@@ -15,6 +15,7 @@ import '../components/preparation.dart';
 import '../components/recipe_brief_row.dart';
 import '../components/recipe_ingredients.dart';
 import '../components/recipe_tags.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 
 class DetailsView extends StatefulWidget {
@@ -91,7 +92,7 @@ class _DetailsViewState extends State<DetailsView> {
                     ),
                     SizedBox(height: sizedBoxHeight,),
                     RecipeDigest(recipe: recipe),
-                  ],
+                  ].animate(interval: 80.ms).scale(duration: 180.ms),
                 );
               })
             ),

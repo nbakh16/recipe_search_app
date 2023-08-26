@@ -105,7 +105,7 @@ class RecipeDigest extends StatelessWidget {
           ],
         ),
         Container(
-          height: 200,
+          height: 220,
           width: double.infinity,
           padding: const EdgeInsets.all(18.0),
           decoration: const BoxDecoration(
@@ -158,7 +158,15 @@ class RecipeDigest extends StatelessWidget {
                 child: Visibility(
                   visible: digestInfo(selectedIndex.value).sub != null,
                   replacement: const SizedBox(),
-                  child: SizedBox(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: mainColor.shade200,
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(24),
+                          bottomLeft: Radius.circular(24),
+                          bottomRight: Radius.circular(24),
+                        )
+                    ),
                     child: Column(
                       children: [
                         Row(
@@ -184,47 +192,52 @@ class RecipeDigest extends StatelessWidget {
                         ),
                         const SizedBox(height: 4.0,),
                         Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const ScrollPhysics(),
-                            itemCount: digestInfo(selectedIndex.value).sub?.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(3.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text('${digestInfo(selectedIndex.value).sub?[index].label}',
-                                        style: Theme.of(context).textTheme.titleSmall,
+                          child: RawScrollbar(
+                            thumbColor: Colors.black54,
+                            thumbVisibility: true,
+                            thickness: 3.0,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const ScrollPhysics(),
+                              itemCount: digestInfo(selectedIndex.value).sub?.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text('${digestInfo(selectedIndex.value).sub?[index].label}',
+                                          style: Theme.of(context).textTheme.titleSmall,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Text('${digestInfo(selectedIndex.value).sub?[index].total?.toStringAsFixed(2)} '
-                                          '${digestInfo(selectedIndex.value).unit}',
-                                        style: Theme.of(context).textTheme.titleSmall,
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text('${digestInfo(selectedIndex.value).sub?[index].total?.toStringAsFixed(2)} '
+                                            '${digestInfo(selectedIndex.value).unit}',
+                                          style: Theme.of(context).textTheme.titleSmall,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Text('${digestInfo(selectedIndex.value).sub?[index].daily?.toStringAsFixed(2)} '
-                                          '${digestInfo(selectedIndex.value).unit}',
-                                        style: Theme.of(context).textTheme.titleSmall,
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text('${digestInfo(selectedIndex.value).sub?[index].daily?.toStringAsFixed(2)} '
+                                            '${digestInfo(selectedIndex.value).unit}',
+                                          style: Theme.of(context).textTheme.titleSmall,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }, scrollDirection: Axis.vertical,
+                                    ],
+                                  ),
+                                );
+                              }, scrollDirection: Axis.vertical,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           )),
         )

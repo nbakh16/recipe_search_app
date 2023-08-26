@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:recipe_app/app/modules/home/controllers/home_controller.dart';
 import 'package:recipe_app/app/modules/home/widgets/recipe_card.dart';
 import '../../../data/models/recipe_model.dart';
 import '../../details/views/details_view.dart';
 import '../widgets/custom_drawer.dart';
+import '../widgets/shimmer_loading_effect.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({super.key});
@@ -31,7 +33,7 @@ class HomeView extends StatelessWidget {
               padding: const EdgeInsets.all(12.0),
               child: GetBuilder<HomeController>(builder: (controller){
                 if (controller.recipeList.isEmpty) {
-                  return const CircularProgressIndicator();
+                  return const ShimmerLoadingEffect();
                 } else {
                   return GridView.builder(
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -44,17 +46,20 @@ class HomeView extends StatelessWidget {
                       itemCount: controller.recipeList.length,
                       itemBuilder: (context, index) {
                         Recipe recipe = controller.recipeList[index];
-                        return InkWell(
-                            onTap: () {
-                              Get.to(()=>
-                                const DetailsView(),
-                                transition: Transition.downToUp,
-                                arguments: recipe
-                              );
-                            },
-                            child: RecipeCard(
-                              recipe: recipe,
-                            )
+                        return Animate(
+                          effects: const [FadeEffect()],
+                          child: InkWell(
+                              onTap: () {
+                                Get.to(()=>
+                                  const DetailsView(),
+                                  transition: Transition.downToUp,
+                                  arguments: recipe
+                                );
+                              },
+                              child: RecipeCard(
+                                recipe: recipe,
+                              )
+                          ),
                         );
                       }
                   );

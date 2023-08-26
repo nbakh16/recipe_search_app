@@ -28,6 +28,7 @@ class RecipeIngredients extends StatelessWidget {
           height: screenWidth<700 ? screenWidth*0.33 : screenWidth*0.20,
           child: ListView.builder(
               shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
               itemCount: recipe.ingredients?.length,
               itemBuilder: (context, index) {
