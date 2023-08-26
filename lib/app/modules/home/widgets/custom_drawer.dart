@@ -101,7 +101,9 @@ class CustomDrawer extends StatelessWidget {
                                 ),
                                 ElevatedButton(
                                     onPressed: () => Get.back(),
-                                    child: const Text('Okay'))
+                                    child: Text('Okay',
+                                      style: Theme.of(context).textTheme.headlineMedium,
+                                    ))
                               ],
                             )
                         ),

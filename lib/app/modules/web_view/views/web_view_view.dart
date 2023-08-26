@@ -46,8 +46,9 @@ class WebViewView extends StatelessWidget {
                   visible: webViewController.progress.value < 1,
                   replacement: const SizedBox(),
                   child: LinearProgressIndicator(
-                    minHeight: 10.0,
+                    minHeight: 12.0,
                     value: webViewController.progress.value,
+                    backgroundColor: Colors.grey,
                   )
                 )
               )

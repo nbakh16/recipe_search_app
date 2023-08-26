@@ -38,8 +38,19 @@ class RecipeCard extends StatelessWidget {
                   CustomNetworkImage(
                       imgUrl: '${recipe.image}'
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(5.0),
+                    decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black54,
+                            Colors.transparent,
+                          ],
+                        )
+                    ),
                     child: Text('${recipe.label}',
                       style: Theme.of(context).textTheme.headlineSmall,
                       maxLines: 2,
