@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:recipe_app/app/data/utils/colors.dart';
+import 'package:recipe_app/app/modules/details/components/recipe_digest.dart';
 import 'package:recipe_app/app/modules/details/controllers/details_controller.dart';
-import 'package:recipe_app/app/modules/details/widgets/custom_chip.dart';
-import 'package:recipe_app/app/modules/details/widgets/ingredients_card.dart';
 import 'package:recipe_app/app/modules/home/controllers/home_controller.dart';
 import 'package:recipe_app/app/modules/home/views/home_view.dart';
 import 'package:recipe_app/app/modules/home/widgets/custom_drawer.dart';
-
-import '../../../data/models/digest_model.dart';
-import '../../../data/models/ingredients_model.dart';
 import '../../../data/models/recipe_model.dart';
-import '../../home/widgets/custom_network_image.dart';
-import '../../web_view/views/web_view_view.dart';
-import '../widgets/heading_text.dart';
-import '../widgets/squared_button.dart';
+import '../components/cuisine_type.dart';
+import '../components/health_labels.dart';
+import '../components/nutrition.dart';
+import '../components/preparation.dart';
+import '../components/recipe_brief_row.dart';
+import '../components/recipe_ingredients.dart';
+import '../components/recipe_tags.dart';
 
 
 class DetailsView extends StatefulWidget {
@@ -33,8 +32,6 @@ class _DetailsViewState extends State<DetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.sizeOf(context).width;
-
     final Recipe selectedRecipe = Get.arguments;
     detailsController.recipeDetails(selectedRecipe);
 
@@ -71,521 +68,29 @@ class _DetailsViewState extends State<DetailsView> {
               padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 6.0),
               child: Obx(() {
                 Recipe recipe = detailsController.recipeInfo.value;
-                double sizedBoxHeight = 12;
+                double sizedBoxHeight = 18.0;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Text('${recipe.label}',
-                                  style: Theme.of(context).textTheme.titleMedium,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              Text('See full recipe on:',
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Get.to(()=> const WebViewView(),
-                                    transition: Transition.downToUp,
-                                    arguments: recipe.url
-                                  );
-                                },
-                                child: FittedBox(
-                                  child: Text('${recipe.source}'.toUpperCase(),
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      decoration: TextDecoration.underline,
-                                      fontSize: 16
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 8.0),
-                              Row(
-                                children: [
-                                  SquareButton(
-                                    onTap: () {
-
-                                    },
-                                    icon: const Icon(IconlyLight.plus),
-                                  ),
-                                  SquareButton(
-                                    onTap: () {
-                                      Get.to(()=> const WebViewView(),
-                                          arguments: recipe.shareAs
-                                      );
-                                    },
-                                    icon: const Icon(IconlyBold.send),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: SizedBox(
-                              height: 150,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(40),
-                                child: CustomNetworkImage(
-                                    imgUrl: '${recipe.image}'),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                    RecipeBriefRow(recipe: recipe),
                     SizedBox(height: sizedBoxHeight,),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Health Labels:',
-                            style: Theme.of(context).textTheme.titleLarge
-                        ),
-                        Wrap(
-                          children: <Widget>[
-                            for(var item in recipe.healthLabels!)
-                              CustomChip(text: item)
-                          ],
-                        )
-                      ],
-                    ),
+                    HealthLabels(recipe: recipe),
                     SizedBox(height: sizedBoxHeight,),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Cuisine Type:',
-                            style: Theme.of(context).textTheme.titleLarge
-                        ),
-                        Wrap(
-                          children: <Widget>[
-                            for(var item in recipe.cuisineType!)
-                              CustomChip(text: item)
-                          ],
-                        )
-                      ],
-                    ),
+                    CuisineType(recipe: recipe),
                     SizedBox(height: sizedBoxHeight,),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const HeadingText(title: 'Ingredients'),
-                        SizedBox(
-                          height: screenWidth<700 ? screenWidth*0.33 : screenWidth*0.20,
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: recipe.ingredients?.length,
-                              itemBuilder: (context, index) {
-                                Ingredients ingredient = recipe.ingredients![index];
-                                return IngredientsCard(
-                                  onTap: () {
-                                    showGeneralDialog(
-                                      barrierDismissible: true,
-                                      barrierLabel: '',
-                                      context: context,
-                                      pageBuilder: (_, __, ___) {
-                                        return Container();
-                                      },
-                                      transitionBuilder: (_, anim, __, ___) {
-                                        return Transform.scale(
-                                          scale: Curves.easeInOut.transform(anim.value),
-                                          child: Dialog(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Align(
-                                                    alignment: Alignment.topRight,
-                                                    child: IconButton(
-                                                      onPressed: ()=> Get.back(),
-                                                      icon: const Icon(IconlyBold.closeSquare, color: Colors.redAccent)
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                      height: 100, width: 100,
-                                                      child: CustomNetworkImage(imgUrl: '${ingredient.image}')),
-                                                  const SizedBox(height: 5.0,),
-                                                  Text('${ingredient.text}',
-                                                    style: Theme.of(context).textTheme.titleMedium,
-                                                    maxLines: 5,
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                  const SizedBox(height: 10.0,),
-                                                  Text('Weight: ${ingredient.weight?.toStringAsFixed(2)} g',
-                                                    style: Theme.of(context).textTheme.titleSmall,
-                                                    maxLines: 5,
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                  Text('Category: ${ingredient.foodCategory}',
-                                                    style: Theme.of(context).textTheme.titleSmall,
-                                                    maxLines: 5,
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        );
-                                      },
-                                      transitionDuration: const Duration(milliseconds: 300),
-                                    );
-                                  },
-                                  ingredients: ingredient
-                                );
-                              }
-                          ),
-                        )
-                      ],
-                    ),
+                    RecipeIngredients(recipe: recipe),
                     SizedBox(height: sizedBoxHeight,),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const HeadingText(title: 'Preparation'),
-                        Center(
-                          child: GestureDetector(
-                            onTap: () {
-                              Get.to(()=> const WebViewView(),
-                                  transition: Transition.downToUp,
-                                  arguments: recipe.url
-                              );
-                            },
-                            child: RichText(
-                              text: TextSpan(
-                                text: 'Instructions on ',
-                                style: Theme.of(context).textTheme.bodyMedium,
-                                children: const [
-                                  TextSpan(text: 'BBC Food', style: TextStyle(fontWeight: FontWeight.bold)),
-                                  WidgetSpan(child: Icon(IconlyLight.arrowDown2, size: 20,))
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                    Preparation(recipe: recipe),
                     SizedBox(height: sizedBoxHeight,),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const HeadingText(title: 'Nutrition'),
-                        Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: Container(
-                            height: 120,
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(12.0),
-                            decoration: const BoxDecoration(
-                                color: mainColor,
-                                borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(24),
-                                  bottomLeft: Radius.circular(24),
-                                  bottomRight: Radius.circular(24),
-                                )
-                            ),
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    children: [
-                                      CustomChip(
-                                        text: '${recipe.totalNutrients?.eNERCKCAL?.quantity?.toStringAsFixed(2)} '
-                                            '${recipe.totalNutrients?.eNERCKCAL?.unit}',
-                                            borderRadius: 10,),
-                                      Text('${recipe.totalNutrients?.eNERCKCAL?.label}'.toUpperCase(),
-                                        style: Theme.of(context).textTheme.titleMedium,
-                                      )
-                                    ],
-                                  ),
-                                  const VerticalDivider(thickness: 2, color: Colors.black38,),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    children: [
-                                      CustomChip(
-                                        text: '${recipe.totalNutrients?.fAT?.quantity?.toStringAsFixed(2)} '
-                                            '${recipe.totalNutrients?.fAT?.unit}',
-                                        borderRadius: 10,),
-                                      Text('${recipe.totalNutrients?.fAT?.label}'.toUpperCase(),
-                                        style: Theme.of(context).textTheme.titleMedium,
-                                      )
-                                    ],
-                                  ),
-                                  const VerticalDivider(thickness: 2, color: Colors.black38,),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    children: [
-                                      CustomChip(
-                                        text: '${recipe.totalNutrients?.sUGAR?.quantity?.toStringAsFixed(2)} '
-                                            '${recipe.totalNutrients?.sUGAR?.unit}',
-                                        borderRadius: 10,),
-                                      Text('${recipe.totalNutrients?.sUGAR?.label}'.toUpperCase(),
-                                        style: Theme.of(context).textTheme.titleMedium,
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                    Nutrition(recipe: recipe),
                     SizedBox(height: sizedBoxHeight,),
                     Visibility(
                       visible: recipe.dietLabels!.isNotEmpty,
                       replacement: const SizedBox(),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const HeadingText(title: 'Tags'),
-                          Wrap(
-                            children: <Widget>[
-                              for(var item in recipe.dietLabels!)
-                                Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: Text('$item,',
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                          decoration: TextDecoration.underline,
-                                          fontSize: 16
-                                      ),
-                                    )
-                                )
-                            ],
-                          )
-                        ],
-                      ),
+                      child: RecipeTags(recipe: recipe),
                     ),
                     SizedBox(height: sizedBoxHeight,),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const HeadingText(title: 'Digest'),
-                        Stack(
-                          children: [
-                            Container(
-                              height: 50,
-                              margin: const EdgeInsets.symmetric(vertical: 10.0),
-                              decoration: BoxDecoration(
-                                color: mainColor,
-                                borderRadius: BorderRadius.circular(25),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.shade400,
-                                    blurRadius: 4,
-                                    offset: const Offset(3, 3),
-                                  ),
-                                ],
-                              ),
-                              child: const Align(
-                                alignment: Alignment.centerRight,
-                                child: Icon(IconlyLight.arrowRight2, size: 25, color: Colors.black87),
-                              ),
-                            ),
-                            Container(
-                              height: 50,
-                              margin: const EdgeInsets.only(
-                                right: 18.0, top: 10.0, bottom: 10.0,
-                              ),
-                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(25),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.shade400,
-                                    blurRadius: 4,
-                                    offset: const Offset(3, 3),
-                                  ),
-                                ],
-                              ),
-                              child: RawScrollbar(
-                                thickness: 1.5,
-                                thumbColor: Colors.black87,
-                                thumbVisibility: true,
-                                trackVisibility: true,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: recipe.digest!.length,
-                                  itemBuilder: (context, index) {
-                                    return Obx(()=> AnimatedContainer(
-                                        duration: const Duration(milliseconds: 400),
-                                        margin: const EdgeInsets.all(6.0),
-                                        decoration: BoxDecoration(
-                                          color: selectedIndex.value == index ? mainColor : Colors.transparent,
-                                          borderRadius: BorderRadius.circular(18),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: selectedIndex.value == index ? Colors.grey : Colors.transparent,
-                                              blurRadius: 4,
-                                              offset: const Offset(4, 4),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Center(
-                                          child: InkWell(
-                                              onTap: () {
-                                                selectedIndex.value = index;
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text('${recipe.digest?[index].label}',
-                                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                      color: selectedIndex.value == index ? Colors.black87 : Colors.black45
-                                                  ),
-                                                ),
-                                              )),
-                                        )
-                                    ));
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          height: 200,
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(18.0),
-                          decoration: const BoxDecoration(
-                            color: mainColor,
-                              borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(24),
-                                bottomLeft: Radius.circular(24),
-                                bottomRight: Radius.circular(24),
-                              )
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: RichText(
-                                  text: TextSpan(
-                                    text: '${digestInfo(selectedIndex.value).label}',
-                                    style: Theme.of(context).textTheme.headlineMedium,
-                                    children: const [
-                                      WidgetSpan(child: Icon(IconlyLight.arrowDown2, size: 25,))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 8.0,),
-                              Expanded(
-                                flex: 1,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Text('Total: ${digestInfo(selectedIndex.value).total?.toStringAsFixed(2)} '
-                                        '${digestInfo(selectedIndex.value).unit}',
-                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                        fontSize: 18
-                                      ),
-                                    ),
-                                    Text('Daily: ${digestInfo(selectedIndex.value).daily?.toStringAsFixed(2)} '
-                                        '${digestInfo(selectedIndex.value).unit}',
-                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                          fontSize: 18
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 20.0,),
-                              Expanded(
-                                flex: 3,
-                                child: Visibility(
-                                  visible: digestInfo(selectedIndex.value).sub != null,
-                                  replacement: const SizedBox(),
-                                  child: SizedBox(
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const Expanded(
-                                                flex: 2,
-                                                child: SizedBox()
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Text('Total',
-                                                  style: Theme.of(context).textTheme.labelMedium
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Text('Daily',
-                                                  style: Theme.of(context).textTheme.labelMedium
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 4.0,),
-                                        Expanded(
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          physics: const ScrollPhysics(),
-                                          itemCount: digestInfo(selectedIndex.value).sub?.length,
-                                          itemBuilder: (context, index) {
-                                            return Padding(
-                                              padding: const EdgeInsets.all(3.0),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Expanded(
-                                                    flex: 2,
-                                                    child: Text('${digestInfo(selectedIndex.value).sub?[index].label}',
-                                                      style: Theme.of(context).textTheme.titleSmall,
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Text('${digestInfo(selectedIndex.value).sub?[index].total?.toStringAsFixed(2)} '
-                                                        '${digestInfo(selectedIndex.value).unit}',
-                                                      style: Theme.of(context).textTheme.titleSmall,
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Text('${digestInfo(selectedIndex.value).sub?[index].daily?.toStringAsFixed(2)} '
-                                                        '${digestInfo(selectedIndex.value).unit}',
-                                                      style: Theme.of(context).textTheme.titleSmall,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          }, scrollDirection: Axis.vertical,
-                                        ),
-                                ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+                    RecipeDigest(recipe: recipe),
                   ],
                 );
               })
@@ -594,13 +99,6 @@ class _DetailsViewState extends State<DetailsView> {
         ),
       ],
     );
-  }
-
-  Digest digestInfo(int index) {
-    final recipe = detailsController.recipeInfo.value;
-    Digest digest = recipe.digest![index];
-
-    return digest;
   }
 
   final BorderRadius _borderRadius = const BorderRadius.all(Radius.circular(10.0));

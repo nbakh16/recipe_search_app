@@ -14,7 +14,8 @@ class HomeController extends GetxController {
     recipeList.clear();
     update();
 
-    String recipeUrl = 'https://edamam-recipe-search.p.rapidapi.com/search?q=$recipe';
+    // String recipeUrl = 'https://edamam-recipe-search.p.rapidapi.com/search?q=$recipe'; //v1 url
+    String recipeUrl = 'https://edamam-recipe-search.p.rapidapi.com/api/recipes/v2?type=any&q=$recipe';
 
     Response response = await get(
       Uri.parse(recipeUrl),

@@ -51,9 +51,23 @@ class AppTheme{
               fontSize: 18
           ),
           labelMedium: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              decoration: TextDecoration.underline
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            decoration: TextDecoration.underline,
+            decorationThickness: 3,
+          ),
+          labelLarge: TextStyle(
+            fontSize: 18,
+            color: Colors.transparent,
+              shadows: [
+                Shadow(
+                  color: Colors.black87,
+                  offset: Offset(0, -7))
+              ],
+            fontWeight: FontWeight.bold,
+            decoration: TextDecoration.underline,
+            decorationThickness: 5.0,
+            decorationColor: Colors.amberAccent
           ),
           bodyMedium: TextStyle(
             fontSize: 15

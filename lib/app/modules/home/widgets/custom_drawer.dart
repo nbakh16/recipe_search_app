@@ -13,6 +13,19 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List recipeList = [
+      'Chicken',
+      'Beef',
+      'Fish',
+      'Noodles',
+      'Pasta',
+      'Curry',
+      'Chinese',
+      'Soup',
+      'Burger',
+      'Sandwich'
+    ];
+
     return Drawer(
       child: Column(
         children: [
@@ -45,20 +58,12 @@ class CustomDrawer extends StatelessWidget {
                     Get.back();
                   },
                 ),
-                const ExpansionTile(
-                  title: Text('Browse Recipe'),
-                  leading: Icon(IconlyLight.category),
+                ExpansionTile(
+                  title: const Text('Browse Recipe'),
+                  leading: const Icon(IconlyLight.category),
                   children: <RecipeListTile>[
-                    RecipeListTile(title: 'Chicken',),
-                    RecipeListTile(title: 'Beef',),
-                    RecipeListTile(title: 'Fish',),
-                    RecipeListTile(title: 'Noodles',),
-                    RecipeListTile(title: 'Pasta',),
-                    RecipeListTile(title: 'Curry',),
-                    RecipeListTile(title: 'Chinese',),
-                    RecipeListTile(title: 'Soup',),
-                    RecipeListTile(title: 'Burger',),
-                    RecipeListTile(title: 'Sandwich',),
+                    for(String item in recipeList)
+                      RecipeListTile(title: item,)
                   ],
                 ),
               ],
